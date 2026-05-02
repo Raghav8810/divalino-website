@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+ * Self-hosted "Humane" (Pangram Pangram) — files live in /public/humane.
+ * ------------------------------------------------------------------
+ * We declare every weight as its own @font-face so we can use
+ * `font-weight: 100..700` on a single `font-family: "Humane"` declaration
+ * without surprises. `font-display: swap` keeps text painted with the
+ * fallback while the .ttf is in flight (essential for FCP).
+ * ------------------------------------------------------------------ */
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("/humane/Humane-Thin.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url("/humane/Humane-ExtraLight.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/humane/Humane-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/humane/Humane-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/humane/Humane-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/humane/Humane-SemiBold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Humane";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/humane/Humane-Bold.ttf") format("truetype");
+}
+
+/* ------------------------------------------------------------------
+ * Design tokens (CSS custom properties)
+ * ------------------------------------------------------------------ */
+:root {
+  /* ----------------------------------------------------------------------
+   * Atelier palette — warm couture / silk / antique gold.
+   * Anchored to the cream/ivory tone of the hero video so every section
+   * feels like one continuous atelier surface.
+   * -------------------------------------------------------------------- */
+
+  /* Brand — antique gold (single accent, used sparingly) */
+  --color-brand-50:  #faf6ee;
+  --color-brand-100: #f1e8d2;
+  --color-brand-200: #e3d2a8;
+  --color-brand-300: #d2b878;
+  --color-brand-400: #b89656;
+  --color-brand-500: #8a6f3f; /* primary accent */
+  --color-brand-600: #6f5832;
+  --color-brand-700: #564327;
+  --color-brand-800: #3e301c;
+  --color-brand-900: #271e12;
+
+  /* Neutrals — warm ivory / sand / ink */
+  --color-background: #c9bba4;        /* page bg — warm sand / atelier linen */
+  --color-foreground: #1a1613;        /* warm near-black ink */
+  --color-muted: #ebe2d4;             /* sand tint */
+  --color-muted-foreground: #6b6258;  /* taupe — secondary copy */
+  --color-border: #d9cfbe;            /* soft sand line */
+  --color-ring: #8a6f3f;
+
+  /* Surface */
+  --color-card: #ebe2d4;
+  --color-card-foreground: #1a1613;
+
+  /* Gallery surface — so card corners blend with the bg, never pure black */
+  --color-surface-deep: #2a2520;      /* deep walnut for dramatic sections */
+  --color-surface-soft: #ebe2d4;
+
+  /* Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Typography scale */
+  --font-display: var(--font-geist-sans);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-satoshi: "Satoshi", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-humane: "Humane", "Impact", "Oswald", ui-sans-serif, system-ui, sans-serif;
+
+  /* Container */
+  --container-max: 1280px;
+}
+
+/* Stay light by default — the atelier identity is cream, not dark.
+ * If you want a dark variant later, opt-in via a `.dark` class instead of
+ * media query so it doesn't fight the brand. */
+
+/* ------------------------------------------------------------------
+ * Expose tokens to Tailwind v4 theme
+ * ------------------------------------------------------------------ */
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-muted: var(--color-muted);
+  --color-muted-foreground: var(--color-muted-foreground);
+  --color-border: var(--color-border);
+  --color-ring: var(--color-ring);
+  --color-card: var(--color-card);
+  --color-card-foreground: var(--color-card-foreground);
+  --color-surface-deep: var(--color-surface-deep);
+  --color-surface-soft: var(--color-surface-soft);
+
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-200: var(--color-brand-200);
+  --color-brand-300: var(--color-brand-300);
+  --color-brand-400: var(--color-brand-400);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-brand-800: var(--color-brand-800);
+  --color-brand-900: var(--color-brand-900);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-satoshi: var(--font-satoshi);
+  --font-humane: var(--font-humane);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+}
+
+/* ------------------------------------------------------------------
+ * Base styles
+ * ------------------------------------------------------------------ */
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+/* ------------------------------------------------------------------
+ * Hide native scrollbars (scroll still works — Lenis handles UX)
+ * ------------------------------------------------------------------ */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Legacy Edge / IE */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* Chrome / Safari / Webkit */
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: var(--color-brand-50);
+}
+
+/* ------------------------------------------------------------------
+ * ProductCard active-state CSS variables
+ * ------------------------------------------------------------------
+ * The horizontal gallery flips a `data-active` attribute on each card
+ * imperatively (no React re-renders). These rules map that attribute to
+ * the CSS variables consumed by ProductCard's transform/opacity/filter.
+ *
+ * Keeping the visual state purely in CSS means scrolling never goes
+ * through React reconciliation — only one composite layer per card.
+ * ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------
+ * Cinematic image zoom (Geospace-style)
+ * ------------------------------------------------------------------
+ * The IMAGE inside the card scales independently of the card frame:
+ *  - inactive : 1.00  (resting)
+ *  - active   : 1.08  (cinematic "stepping in")
+ *  - hovered  : 1.12  (extra push, only when pointer is on the card)
+ *
+ * The wrapper has `overflow: hidden` so the zoom is contained inside
+ * the fixed card rectangle — that's what creates the "into the photo"
+ * feeling. All transitions are GPU-cheap (transform only).
+ * ------------------------------------------------------------------ */
+.product-card .product-card__media img {
+  transform: scale(1);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.product-card[data-active="true"] .product-card__media img {
+  transform: scale(1.08);
+}
+.product-card .product-card__media[data-hovered="true"] img {
+  transform: scale(1.12);
+}
+
+/* Reusable container utility */
+@utility container-px {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+}
