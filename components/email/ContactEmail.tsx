@@ -1,5 +1,5 @@
 import * as React from "react";
-
+// email
 /* ------------------------------------------------------------------
  * Shared brand tokens — inlined because email clients strip <style>.
  * These mirror the Divalino palette from globals.css.
