@@ -51,6 +51,7 @@ const NAV_ITEMS = [
   { target: "#explore", label: "Explore" },
   { target: "#journal", label: "Blog" },
   { target: "#our-story", label: "Our Story" },
+  { target: "#contact", label: "Contact Us" },
 ];
 
 // Reveal window in pixels — between these two values the navbar animates in.
@@ -261,46 +262,14 @@ export function AnimatedNavbar() {
         transform: `translate3d(0, ${(progress - 1) * 100}%, 0)`,
         opacity: progress,
         willChange: "transform, opacity",
-        color: onDark ? "#ffffff" : "var(--color-foreground)",
-        // Frosted glass backdrop — content slides cleanly underneath.
-        // Adapts tint to the current section's theme so the blur reads
-        // naturally whether over dark video or cream editorial surface.
-        backgroundColor: onDark
-          ? "rgba(14, 16, 15, 0.55)"    // dark tint for dark sections
-          : "rgba(245, 240, 232, 0.6)",  // warm cream tint for light sections
-        backdropFilter: "blur(16px) saturate(1.6)",
-        WebkitBackdropFilter: "blur(16px) saturate(1.6)",
+        color: "#111111", // Consistent dark text for the light background
+        // Light frosted glass backdrop — looks premium and ensures the color logo is visible
+        backgroundColor: "rgba(255, 255, 255, 0.75)",
+        backdropFilter: "blur(24px) saturate(1.8)",
+        WebkitBackdropFilter: "blur(24px) saturate(1.8)",
       }}
-      data-theme={onDark ? "dark" : "light"}
+      data-theme="light"
     >
-      {/* Bottom fade — softens the hard edge of the frosted bar into the
-          page content below. Reads as a subtle gradient vignette, not a
-          solid line. Adapts color to the current theme. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-6 translate-y-full"
-        style={{
-          background: onDark
-            ? "linear-gradient(180deg, rgba(14,16,15,0.35) 0%, transparent 100%)"
-            : "linear-gradient(180deg, rgba(245,240,232,0.3) 0%, transparent 100%)",
-          transition: "background 300ms",
-        }}
-      />
-
-      {/* Subtle bottom hairline — barely-there separator between navbar
-          and content. Matches the editorial hairline rule language used
-          across the site (FAQ rows, footer dividers, etc.). */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
-        style={{
-          background: onDark
-            ? "rgba(255,255,255,0.08)"
-            : "rgba(0,0,0,0.06)",
-          transition: "background 300ms",
-        }}
-      />
-
       {/*
         3-column grid: `1fr auto 1fr` guarantees the center column stays
         perfectly centered regardless of left/right content width — which a
@@ -315,17 +284,16 @@ export function AnimatedNavbar() {
         <div className="flex items-center">
           <Link
             href="/"
-            className={`font-display text-xl tracking-wide ${onDark ? "drop-shadow-[0_1px_6px_rgba(0,0,0,0.45)]" : ""}`}
-            style={{ fontVariant: "small-caps" }}
+            className="flex items-center"
           >
-            Learning Web
+            <img src="/logo-color.svg" alt="Divalino Logo" className="h-8 w-auto object-contain" />
           </Link>
         </div>
 
         {/* Center — primary nav with sliding indicator */}
         <nav
           ref={navRef}
-          className={`relative flex items-center gap-8 text-[0.75rem] uppercase tracking-[0.22em] ${onDark ? "[text-shadow:0_1px_6px_rgba(0,0,0,0.45)]" : ""}`}
+          className="relative flex items-center gap-8 text-[0.75rem] uppercase tracking-[0.22em]"
         >
           {NAV_ITEMS.map((item) => (
             <button

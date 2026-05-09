@@ -33,6 +33,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="icon" href="/logo-color.svg" type="image/svg+xml" />
         {/* Satoshi via Fontshare — used by editorial sections (ExploreSection). */}
         <link
           rel="stylesheet"

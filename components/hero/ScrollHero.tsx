@@ -89,8 +89,6 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
     const kickerEl = titleKickerRef.current;
     const headingEl = titleHeadingRef.current;
     const scrollHint = scrollHintRef.current;
-    const curtain = curtainRef.current;
-    const nextSection = nextSectionRef.current;
     if (
       !wrapper ||
       !stage ||
@@ -99,9 +97,7 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
       !title ||
       !kickerEl ||
       !headingEl ||
-      !scrollHint ||
-      !curtain ||
-      !nextSection
+      !scrollHint
     )
       return;
 
@@ -113,26 +109,10 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
     ).matches;
 
     if (prefersReducedMotion) {
-      gsap.set([curtain, nextSection], { clearProps: "all" });
-      curtain.style.transform = "translateY(0)";
-      nextSection.style.opacity = "1";
-
       video.loop = true;
       video.autoplay = true;
-      video.play().catch(() => {});
-
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            (entry.target as HTMLElement).style.opacity = entry.isIntersecting
-              ? "1"
-              : "0";
-          }
-        },
-        { threshold: 0.2 },
-      );
-      io.observe(nextSection);
-      return () => io.disconnect();
+      video.play().catch(() => { });
+      return;
     }
 
     const ctx = gsap.context(() => {
@@ -237,16 +217,15 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
             start: "top top",
             end: "bottom bottom",
             pin: stage,
-            pinSpacing: true,
+            pinSpacing: false,
             scrub: 1.2,
             markers: DEBUG_MARKERS,
             invalidateOnRefresh: true,
             onUpdate: (self: ScrollTrigger.Vars) => {
               const progress = (self as unknown as { progress: number })
                 .progress;
-              // Video plays through walk + zoom phase, freezes when curtain covers.
-              // We stop advancing at 0.85 — past that the curtain hides the video.
-              const walkProgress = Math.min(progress / 0.85, 1);
+              // Video plays through walk + zoom phase.
+              const walkProgress = progress;
               const t = walkProgress * duration;
               if (!Number.isNaN(t) && Number.isFinite(t)) {
                 queueSeek(t);
@@ -255,81 +234,27 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
           },
         });
 
-        // ----- Scene 1: walking (0 → 0.65) --------------------------------
+        // ----- Scene 1: walking (0 → 0.70) --------------------------------
         // Title fades out just before the zoom starts.
         tl.to(
           title,
-          { opacity: 0, y: -40, duration: 0.07, ease: "power2.in" },
-          0.60,
+          { opacity: 0, y: -40, duration: 0.08, ease: "power2.in" },
+          0.62,
         );
 
-        // ----- Scene 2: approach / zoom (0.65 → 0.85) --------------------
+        // ----- Scene 2: approach / zoom (0.70 → 1.00) --------------------
         // Zoom the video; simultaneously blur bg behind it.
-        // NOTE: We deliberately do NOT apply blur to bg here — blurring the
-        // background while it's hidden by the video creates the ugly "blurry
-        // state" the user sees. Instead we only scale the video itself.
         tl.to(
           video,
-          { scale: 2.2, duration: 0.20, ease: "power2.inOut" },
-          0.65,
+          { scale: 2.2, duration: 0.30, ease: "power2.inOut" },
+          0.70,
         );
 
         // Fade the bg (gradient) out as the video fills the frame.
         tl.to(
           bg,
-          { opacity: 0, duration: 0.15, ease: "power1.in" },
-          0.65,
-        );
-
-        // ----- Scene 3: curtain wipe + handoff (0.80 → 1.00) -------------
-        //
-        // FIX 2: Industry-standard "curtain over transition" pattern.
-        //
-        // Step A (0.80 → 0.93): A solid curtain panel slides UP from the
-        // bottom of the viewport, fully covering the zoomed blurry video.
-        // The user's eye follows the clean wipe edge — they never see the
-        // ugly blurry video state.
-        //
-        // Step B (0.90 → 1.00): The actual next-section content fades in
-        // on top of the curtain. Because the curtain and the next section
-        // share the same background colour, the fade-in is seamless — it
-        // just looks like the text/content appearing on a clean surface.
-        //
-        // This is identical to the technique used on high-end Awwwards sites
-        // (Cher Ami, Hi-Réel, Active Theory) where scroll-driven video
-        // transitions cut to a clean colour rather than compositing over a
-        // half-blurred frame.
-        //
-        // Initial curtain state: translateY(100%) (below viewport)
-        tl.to(
-          curtain,
-          {
-            yPercent: 0,
-            duration: 0.20,
-            ease: "power3.inOut",
-          },
-          0.80,
-        );
-
-        // While curtain slides up, start fading the video out so the curtain
-        // doesn't need to be fully opaque — belt-and-suspenders.
-        tl.to(
-          video,
-          { opacity: 0, duration: 0.12, ease: "power1.in" },
-          0.82,
-        );
-
-        // Step B: Content fades in on top of the (now fully covering) curtain.
-        tl.fromTo(
-          nextSection,
-          { autoAlpha: 0, y: 32 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.10,
-            ease: "power2.out",
-          },
-          0.92,
+          { opacity: 0, duration: 0.20, ease: "power1.in" },
+          0.70,
         );
       });
     }, wrapper);
@@ -353,9 +278,7 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
       <section
         ref={wrapperRef}
         className={cn(
-          // 280vh of scrollable space — long enough to feel unhurried, short
-          // enough to keep scrub responsive.
-          "relative h-[280vh] w-full",
+          "relative h-[250vh] w-full",
           className,
         )}
         aria-label="Animated hero"
@@ -407,19 +330,19 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
             className="pointer-events-none absolute left-1/2 top-24 z-20 -translate-x-1/2 text-center text-white will-change-[transform,opacity] drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
           >
             <p
-            ref={titleKickerRef}
-            className="mb-6 font-mono text-[0.6rem] uppercase tracking-[0.4em] md:text-xs"
-            aria-hidden="true"
-          >
-            {kicker ?? "SCROLL TO WALK"}
-          </p>
+              ref={titleKickerRef}
+              className="mb-6 font-mono text-[0.6rem] uppercase tracking-[0.4em] md:text-xs"
+              aria-hidden="true"
+            >
+              {kicker ?? "SCROLL TO WALK"}
+            </p>
             <h1
-            ref={titleHeadingRef}
-            className="font-display text-5xl font-medium tracking-tight sm:text-6xl md:text-8xl lg:text-[10rem] xl:text-[12rem] text-balance max-w-[90vw]"
-            style={{ lineHeight: 1.1 }}
-          >
-            {heading ?? "Step into the story."}
-          </h1>
+              ref={titleHeadingRef}
+              className="font-display text-5xl font-medium tracking-tight sm:text-6xl md:text-8xl lg:text-[10rem] xl:text-[12rem] text-balance max-w-[90vw]"
+              style={{ lineHeight: 1.1 }}
+            >
+              {heading ?? "Step into the story."}
+            </h1>
           </div>
 
           {/*
@@ -443,33 +366,6 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
             <source src={videoMp4 ?? VIDEO_SRC_MP4} type="video/mp4" />
           </video>
 
-          {/*
-          CURTAIN PANEL — FIX 2
-          Sits above the video (z-25) but below the next-section content (z-30).
-          Starts fully below the viewport (translateY 100%) and slides up to
-          cover the blurry zoomed video during the handoff phase.
-          Uses the same background colour as the stage so the wipe edge looks
-          intentional, not like a bug.
-        */}
-          <div
-            ref={curtainRef}
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-[25] bg-[var(--color-background)] will-change-transform"
-            style={{ transform: "translateY(100%)" }}
-          />
-
-          {/*
-          Next section reveal — lives inside the pinned stage.
-          Fades in on top of the solid curtain — no blurry video behind it.
-        */}
-          <div
-            ref={nextSectionRef}
-            className="absolute inset-0 z-30 flex items-center justify-center"
-            style={{ opacity: 0 }}
-          >
-            <NextSectionContent />
-          </div>
-
           {/* Scroll hint — only meaningful at the very top */}
           <div
             ref={scrollHintRef}
@@ -482,26 +378,5 @@ export function ScrollHero({ className, kicker, heading, videoMp4, videoWebm }: 
         </div>
       </section>
     </>
-  );
-}
-
-/* ----------------------------------------------------------------------------
- * Next section content — shown at ~90–100% of the hero scroll progress.
- * Kept in the same file to keep the handoff tightly coupled to the timeline.
- * -------------------------------------------------------------------------- */
-function NextSectionContent() {
-  return (
-    <div className="mx-auto max-w-3xl px-6 text-center">
-      <p className="mb-4 text-xs uppercase tracking-[0.3em] text-[var(--color-brand-600)]">
-        Chapter 2
-      </p>
-      <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
-        The journey begins.
-      </h2>
-      <p className="mt-6 text-lg text-[var(--color-muted-foreground)]">
-        From a single step to a full experience — crafted with Next.js, GSAP,
-        and a touch of obsession.
-      </p>
-    </div>
   );
 }

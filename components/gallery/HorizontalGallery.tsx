@@ -102,6 +102,7 @@ function DesktopGallery({
   const trackRef = useRef<HTMLDivElement | null>(null);
   const barRef = useRef<HTMLDivElement | null>(null);
   const counterRef = useRef<HTMLSpanElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
@@ -140,6 +141,27 @@ function DesktopGallery({
     };
 
     const ctx = gsap.context(() => {
+      const header = headerRef.current;
+      if (header) {
+        const headerEls = Array.from(header.children);
+        gsap.fromTo(
+          headerEls,
+          { autoAlpha: 0, y: 40 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 2,
+            stagger: 0.3,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: wrapper,
+              start: "top 75%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
       const getDistance = () => track.scrollWidth - window.innerWidth;
 
       gsap.to(track, {
@@ -215,17 +237,17 @@ function DesktopGallery({
   }, [products.length]);
 
   return (
-    <section ref={wrapperRef} id="featured-pieces" data-navbar-theme="light" className="relative bg-[var(--color-background)]">
+    <section ref={wrapperRef} id="featured-pieces" data-navbar-theme="light" className="relative z-10 bg-[var(--color-background)]">
       <div
         ref={stageRef}
         className="relative h-screen w-full overflow-hidden bg-[var(--color-background)] text-[var(--color-foreground)]"
       >
-        <header className="absolute left-8 right-8 top-10 z-20 text-center md:left-16 md:right-16 md:top-12">
-          <p className="mb-2 text-[0.7rem] uppercase tracking-[0.3em] text-[var(--color-muted-foreground)]">
+        <header ref={headerRef} className="absolute left-8 right-8 top-10 z-20 text-center md:left-16 md:right-16 md:top-12">
+          <p className="mb-2 text-[0.7rem] uppercase tracking-[0.3em] text-[var(--color-muted-foreground)] will-change-[transform,opacity]">
             {eyebrow}
           </p>
           <h2
-            className="leading-[0.85] tracking-tight text-[var(--color-foreground)]"
+            className="leading-[0.85] tracking-tight text-[var(--color-foreground)] will-change-[transform,opacity]"
             style={{
               fontFamily: "var(--font-humane)",
               fontWeight: 500,
