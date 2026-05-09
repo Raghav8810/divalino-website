@@ -160,7 +160,7 @@ function DesktopGallery({
             snapTo: 1 / (products.length - 1),
             duration: { min: 0.15, max: 0.4 },
             ease: "power2.inOut",
-          } : false,
+          } : undefined,
           onUpdate: (self) => {
             const p = self.progress;
             // ----- Bar: target value, animated by rAF lerp loop -----
