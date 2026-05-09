@@ -29,9 +29,11 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
-      // Time-based smoothing — gives a heavier, more "luxurious" inertia
-      // than `lerp`. 1.2s glide feels premium without being draggy.
-      duration: 1.2,
+      // Time-based smoothing — 0.9s is the sweet spot for scrubbed-video
+      // heroes: long enough to feel premium, short enough that the seek
+      // target never lags far behind the actual cursor position.
+      // (1.2s felt luxurious but amplified video stutter.)
+      duration: 0.9,
       // Exponential ease-out: heavy front, light tail (Apple-style scroll).
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",

@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
+// ✅ NO special runtime export needed here.
+// We use @opennextjs/cloudflare which runs Next.js on Cloudflare Workers
+// using the full Node.js runtime — so your API route works exactly as it
+// does locally. No changes needed to this file!
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 /* ------------------------------------------------------------------
