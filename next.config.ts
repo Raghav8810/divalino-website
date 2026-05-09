@@ -1,17 +1,5 @@
 import type { NextConfig } from "next";
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// next.config.ts — Next.js Configuration
-// Works for both: local development AND Cloudflare Workers deployment.
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// ✅ CLOUDFLARE DEV SETUP: This line makes Cloudflare bindings (like image
-// optimization, caching) available during LOCAL development with `npm run dev`.
-// It only activates in dev mode — does nothing in production.
-import("@opennextjs/cloudflare").then((m) =>
-  m.initOpenNextCloudflareForDev()
-);
-
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
